@@ -1,39 +1,41 @@
-async function getCharacterInfo() {
+async function getCharacterInfo(){
   try {
-    const respuesta = await fetch('https://thronesapi.com/api/v2/Characters');
-    const datos = await respuesta.json();
-    
-    const select = document.getElementById("character-list");
-    
-    datos.forEach(usuario => {
-      const opcion = document.createElement("option");
-      opcion.value = usuario.id;             
-      opcion.textContent = usuario.fullName;     
-      select.appendChild(opcion);            
-    });
-
-    const imageContainer = document.getElementsByClassName("character-image")[0];
-
-    select.addEventListener("change", () => {
-
-      const selectedId = select.value;
-      const usuarioSeleccionado = datos.find(usuario => usuario.id == selectedId);
-
-      if (usuarioSeleccionado) {
-        console.log("Image URL from API:", usuarioSeleccionado.image);
-
-        const img = document.createElement("img"); 
-        img.src = usuarioSeleccionado.image;       
-        img.alt = usuarioSeleccionado.fullName;    
-        imageContainer.appendChild(img);        
-      }
-    });
+      const respuesta = await fetch("https://thronesapi.com/api/v2/Characters");
+      const datos = await respuesta.json();
+      
+      const select = document.querySelector("#character-list");
+      datos.forEach(character =>{
+      const option = document.createElement("option");
+      option.value = character.fullName;
+      option.textContent = character.fullName;
+      select.appendChild(option)
+      return option;
+  
+      });
+      const defaultCharacter = datos[0];
+      printCharacterImage(defaultCharacter);
+      
+      select.addEventListener('change', (event) => {
+          const selectedCharacterName = event.target.value;
+          const selectedCharacter = datos.find(character => character.fullName === selectedCharacterName);
+          if (selectedCharacter) {
+              printCharacterImage(selectedCharacter);
+          }
+      });
 
   } catch (error) {
-    console.error("Error al obtener los datos:", error);
+      console.log("Error al obtener los datos");
+      
   }
-}
+};
 
-getCharacterInfo();
+const printCharacterImage = (character) => {
+  const characterImage = document.querySelector(".character-image");
+  characterImage.innerHTML = `
+      <h2>${character.fullName}</h2>
+      <img src="${character.imageUrl}" alt="${character.fullName}" width="400px">
+      <h3>"${character.title}"<h3>
+  `;
+};
 
-
+getCharacterInfo(); 

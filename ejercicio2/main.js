@@ -1,20 +1,23 @@
-async function getCharacterImage() {
-    try {
-      const respuesta = await fetch('https://pokeapi.co/api/v2/pokemon/1');
-      const datos = await respuesta.json();
+const showPokemon = async ()=>{
+  try {
+      const randomNum = Math.floor(Math.random() * 200) + 1;
+      const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${randomNum}`);
+      const data = await res.json();
+      console.log(data);
+      const randomImage = document.querySelector(".random-image");
+      if (data.id <= 150) {
+          randomImage.innerHTML = `
+              <h1>${data.name}</h1>
+              <img src="${data.sprites.front_default}" alt="${data.name}">
+              <h2>ID: ${data.id}</h2>
+          `;
+      } else {
+          randomImage.innerHTML = `<p>Pokémon número ${randomNum} no encontrado...</p>`;
+      }
       
-      // Selecciona el elemento <select> donde se agregarán los nombres de los personajes
-      const select = document.getElementsByClassName("random-image");
-      
-        const image = document.createElement("img");
-        image.value = usuario.id;             
-        image.textContent = usuario.fullName;     
-        select.appendChild(image);            
-  
-    } catch (error) {
-      console.error("Error al obtener los datos:", error);
-    }
+  } catch (error) {
+      console.log("No se encuentra el personaje solicitado");
   }
-  
-  getCharacterImage();
-  
+
+}
+showPokemon();
